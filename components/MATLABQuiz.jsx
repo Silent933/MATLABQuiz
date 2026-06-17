@@ -207,6 +207,11 @@ export default function App() {
     setQs(shuffled?shuffle(source):[...source]);
     setIdx(0); setSel(null); setAnswers([]); setPhase("quiz");
   }
+  function startSection(source, section){
+    setQsSource(source);
+    setQs(shuffle(source.filter(q=>q.section===section)));
+    setIdx(0); setSel(null); setAnswers([]); setPhase("quiz");
+  }
   function retryWrong(){
     const wrong = qs.filter((_, i) => answers[i] !== qs[i]?.correct);
     setQs(shuffle(wrong));
@@ -255,13 +260,14 @@ export default function App() {
               {[...new Set(src.map(q=>q.section))].map(s=>{
                 const m=SECTION_META[s]||{color:"#38bdf8",bg:"#0c2a3a",icon:"📚"};
                 const cnt=src.filter(q=>q.section===s).length;
-                return <div key={s} style={{background:m.bg,border:`1px solid ${m.color}30`,borderRadius:10,padding:"9px 11px",display:"flex",alignItems:"center",gap:8}}>
+                return <button key={s} onClick={()=>startSection(src,s)} style={{background:m.bg,border:`1px solid ${m.color}30`,borderRadius:10,padding:"9px 11px",display:"flex",alignItems:"center",gap:8,cursor:"pointer",textAlign:"right",width:"100%",transition:"all .15s"}}
+                  onMouseEnter={e=>e.currentTarget.style.borderColor=m.color} onMouseLeave={e=>e.currentTarget.style.borderColor=m.color+"30"}>
                   <span style={{fontSize:16}}>{m.icon}</span>
                   <div>
                     <div style={{color:m.color,fontSize:10.5,fontWeight:700,lineHeight:1.3}}>{s}</div>
                     <div style={{color:"#475569",fontSize:10}}>{cnt} سؤال</div>
                   </div>
-                </div>;
+                </button>;
               })}
             </div>
           </div>
